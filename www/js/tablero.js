@@ -125,7 +125,7 @@ function _pintarSemana(semana, callback = undefined) {
                     if (usuariosDatos.includes(global_usuarioActualId)) // Si yo ya existo en la celdo, elimino el botón (si existe):
                         celda.find('.btnAgregarMarca').remove();
                     else if (celda.find('.btnAgregarMarca').length === 0) // Si no existo en la celda y aún no hay botón de +:
-                        celda.append('<span onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw" style="color: #dedede"></span>');
+                        celda.append('<span onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw" style="color: #efefef"></span>');
                 }
                 // Por algún motivo, a veces se duplican las entradas: // TODO Descubrir porque pasa esto. Ocurre cuando el backend se laggea y pones muchos juntos.
                 global_usuarios.forEach(usuario => {

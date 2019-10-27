@@ -25,7 +25,7 @@ function pintarAvatar() {
     if (usuario)
         html = `<span data-usuarioid="${usuarioId}" class="${usuario.icono} fa-fw" style="color: ${usuario.color}"></span>`;
     else
-        html = '<span class="fas fa-user fa-fw"></span>';
+        html = '<span class="fas fa-user fa-fw" style="color: #424242;"></span>';
     $('#usuarioIcono').html(html);
 }
 
@@ -84,15 +84,18 @@ function iniciarPagina(callback = undefined) {
             memoria.guardar('usuarios', usuarios, false);
             pintarDesplegableUsuarios();
             pintarAvatar();
+            if (callback)
+                callback();
         });
+    } else {
+        if (callback)
+            callback();
     }
-    if (callback)
-        callback();
 }
 
 // Evento lanzado cuando la página ha sido totalmente cargada:
 window.addEventListener('load', function () {
     iniciarPagina(() => {
-        $('body').fadeIn()
+        $('body').fadeIn();
     });
 });

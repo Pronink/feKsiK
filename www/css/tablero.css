@@ -74,3 +74,18 @@ tr:first-child td:first-child {
     left: 0;
     z-index: 10;
 }
+
+@keyframes aumentar {
+    from{
+        transform: scale(0);
+    }
+    to{
+        transform: scale(1);
+    }
+}
+/*Iconos de los usuarios*/
+svg[data-usuarioid] {
+    animation-name: aumentar;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+}

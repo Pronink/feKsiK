@@ -46,13 +46,13 @@ select, input[type="text"] {
 
 select {
     padding: 10px 30px 10px 6px;
-    width: 170px;
+    width: 180px;
     height: 38px;
 }
 
 input[type="text"] {
     padding: 10px;
-    width: 150px;
+    width: 160px;
     height: 18px;
     transition: background-color 0.2s, color 0.2s;
 }
