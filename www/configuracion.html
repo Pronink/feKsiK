@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/global.css">
+    <link rel="stylesheet" type="text/css" href="css/configuracion.css">
+</head>
+<body style="display: none;">
+<div id="app">
+    <div id="header" data-colorprimario="true"></div>
+    <div id="usuarioIcono"><span class="fas fa-user fa-fw"></span></div>
+    <label for="desplegableQuienEres">Usuario</label>
+    <select id="desplegableQuienEres"></select>
+    <br/>
+    <label for="servidorIp">Servidor</label>
+    <input id="servidorIp" type="text" placeholder="ip:puerto"/>
+    <button id="botonConectarServidor" style="display: none;">
+        <span class="fas fa-plug fa-fw"></span>
+    </button>
+    <label for="servidorIp">Versión</label>
+    <p style="font-size: 8px">indev-0.1</p>
+</div>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/jquery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="js/fontawesome/all.js"></script>
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/configuracion.js"></script>
+</body>
+</html>
