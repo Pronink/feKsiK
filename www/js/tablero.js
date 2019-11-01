@@ -47,9 +47,9 @@ function pintarNavegadorSemanas() {
 
     // Flecha izquierda
     if (global_semanaNumero !== 0)
-        html += '<span class="fas fa-angle-left fa-fw" onclick="cambiarDeSemana(global_semanaNumero - 1)"></span>';
+        html += '<i class="fas fa-angle-left fa-fw" onclick="cambiarDeSemana(global_semanaNumero - 1)"></i>';
     else
-        html += '<span class="fas fa-angle-left fa-fw" style="opacity: 0"></span>';
+        html += '<i class="fas fa-angle-left fa-fw" style="opacity: 0"></i>';
 
     // Tag de la semana actual
     html += 'Semana ' + (global_semanaNumero + 1);
@@ -58,9 +58,9 @@ function pintarNavegadorSemanas() {
 
     // Flecha derecha
     if (global_semanaNumero > global_semanaNumero_actual)
-        html += '<span class="fas fa-angle-right fa-fw" style="opacity: 0"></span>';
+        html += '<i class="fas fa-angle-right fa-fw" style="opacity: 0"></i>';
     else
-        html += '<span class="fas fa-angle-right fa-fw" onclick="cambiarDeSemana(global_semanaNumero + 1)"></span>';
+        html += '<i class="fas fa-angle-right fa-fw" onclick="cambiarDeSemana(global_semanaNumero + 1)"></i>';
 
     // Pintar
     $('#navSemanas').html(html);
@@ -103,33 +103,33 @@ function _pintarSemana(semana, callback = undefined) {
                 let usuariosDatos = registro ? registro['users'] : [];
                 // Meto en usuariosCelda los ids de los usuarios que ya están pintados en la celda:
                 let usuariosCelda = [];
-                celda.find('svg[data-usuarioid]').each((inice, iconoUsuario) =>
+                celda.find('i[data-usuarioid]').each((inice, iconoUsuario) =>
                     usuariosCelda.push(parseInt($(iconoUsuario).attr('data-usuarioid')))
                 );
                 // Ahora que tengo usuariosDatos y usuariosCelda debo poner o quitar iconos:
                 // Primero agrego los que no estén pintados:
                 usuariosDatos.forEach(usuarioAgregar => {
                     if (!usuariosCelda.includes(usuarioAgregar))
-                        if (celda.children('svg[data-usuarioid]').length > 0) // Si ya hay un usuario pintado, lo pinto justo después (pero antes que el botón +)
-                            celda.children('svg[data-usuarioid]').last().after(_obtenerHTMLMarcaUsuario(usuarioAgregar));
+                        if (celda.children('i[data-usuarioid]').length > 0) // Si ya hay un usuario pintado, lo pinto justo después (pero antes que el botón +)
+                            celda.children('i[data-usuarioid]').last().after(_obtenerHTMLMarcaUsuario(usuarioAgregar));
                         else // Si no hay ningun usuario pintado, lo pinto al principio (antes que el botón + (si ya existe))
                             celda.prepend((_obtenerHTMLMarcaUsuario(usuarioAgregar)));
                 });
                 // Ahora elimino los que estén pintados pero ya no existan en los datos del backend:
                 usuariosCelda.forEach(usuarioEliminar => {
                     if (!usuariosDatos.includes(usuarioEliminar))
-                        celda.find(`svg[data-usuarioid="${usuarioEliminar}"]`).remove();
+                        celda.find(`i[data-usuarioid="${usuarioEliminar}"]`).remove();
                 });
                 // Agregar o quitar el botón +:
                 if (global_usuarioActualId) {
                     if (usuariosDatos.includes(global_usuarioActualId)) // Si yo ya existo en la celdo, elimino el botón (si existe):
                         celda.find('.btnAgregarMarca').remove();
                     else if (celda.find('.btnAgregarMarca').length === 0) // Si no existo en la celda y aún no hay botón de +:
-                        celda.append('<span onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw" style="color: #efefef"></span>');
+                        celda.append('<i onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw" style="color: #efefef"></i>');
                 }
                 // Por algún motivo, a veces se duplican las entradas: // TODO Descubrir porque pasa esto. Ocurre cuando el backend se laggea y pones muchos juntos.
                 global_usuarios.forEach(usuario => {
-                    $(`svg[data-usuarioid="${usuario.id}"] + svg[data-usuarioid="${usuario.id}"]`).remove();
+                    $(`i[data-usuarioid="${usuario.id}"] + i[data-usuarioid="${usuario.id}"]`).remove();
                 });
             }
 
@@ -144,9 +144,9 @@ function _pintarSemana(semana, callback = undefined) {
         let usuario = global_usuarios.find(usuario => usuario.id === usuarioId);
         if (usuario) {
             if (parseInt(usuario.id) === global_usuarioActualId)
-                return `<span onclick="borrarSello($(this))" data-usuarioid="${usuarioId}" class="${usuario['icono']} fa-fw" style="color: ${usuario.color}"></span>`;
+                return `<i onclick="borrarSello($(this))" data-usuarioid="${usuarioId}" class="${usuario['icono']} fa-fw" style="color: ${usuario.color}"></i>`;
             else
-                return `<span data-usuarioid="${usuarioId}" class="${usuario['icono']} fa-fw" style="color: ${usuario.color}"></span>`;
+                return `<i data-usuarioid="${usuarioId}" class="${usuario['icono']} fa-fw" style="color: ${usuario.color}"></i>`;
         }
         return ''; //TODO Crear un icono de un usuario de color gris Default
     }
@@ -208,5 +208,9 @@ window.addEventListener('load', function () {
             $('body').fadeIn();
         }, 500);
     });
+    // Prevenir ir hacia atrás en el navegador. En el móvil la app se cierra gracias a una función en index.js
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function(event) {
+        history.pushState(null, null, location.href);
+    });
 });
-

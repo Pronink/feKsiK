@@ -14,8 +14,9 @@
     font-size: 20px;
 }
 
-#navSemanas svg {
+#navSemanas i {
     font-size: 30px;
+    text-shadow: 0 0.5px 2px rgba(0, 0, 0, 0.2);
 }
 
 table {
@@ -42,6 +43,7 @@ td:first-child {
     left: 0;
     box-shadow: inset -1px -1px 0 0 #eeeeee;
     background-color: white;
+    z-index: 2;
 }
 
 tr:first-child{
@@ -65,6 +67,7 @@ tr:first-child td {
     box-shadow: none;
     top: 0;
     background: #00695c;
+    z-index: 3;
 }
 
 tr:first-child td:first-child {
@@ -83,9 +86,17 @@ tr:first-child td:first-child {
         transform: scale(1);
     }
 }
-/*Iconos de los usuarios*/
-svg[data-usuarioid] {
+/*Iconos de los usuarios y de agregar marca*/
+i[data-usuarioid], .btnAgregarMarca {
     animation-name: aumentar;
     animation-duration: 0.25s;
     animation-iteration-count: 1;
+    z-index: 1;
+
+}
+i[data-usuarioid] {
+    text-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.3);
+}
+.btnAgregarMarca {
+    text-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.2);
 }

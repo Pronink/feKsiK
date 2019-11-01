@@ -23,9 +23,9 @@ function pintarAvatar() {
     let usuario = memoria.obtener('usuarios', false).find(usuario => usuario.id === usuarioId);
     let html = '';
     if (usuario)
-        html = `<span data-usuarioid="${usuarioId}" class="${usuario.icono} fa-fw" style="color: ${usuario.color}"></span>`;
+        html = `<i data-usuarioid="${usuarioId}" class="${usuario.icono} fa-fw" style="color: ${usuario.color}"></i>`;
     else
-        html = '<span class="fas fa-user fa-fw" style="color: #424242;"></span>';
+        html = '<i class="fas fa-user fa-fw" style="color: #424242;"></i>';
     $('#usuarioIcono').html(html);
 }
 
@@ -97,5 +97,10 @@ function iniciarPagina(callback = undefined) {
 window.addEventListener('load', function () {
     iniciarPagina(() => {
         $('body').fadeIn();
+    });
+    // Prevenir ir hacia atrás en el navegador. En el móvil la app se cierra gracias a una función en index.js
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function(event) {
+        history.pushState(null, null, location.href);
     });
 });
