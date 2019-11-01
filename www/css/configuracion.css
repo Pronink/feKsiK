@@ -20,10 +20,11 @@
     font-size: 80px;
     background-color: white;
     border-radius: 60px;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
 }
 #usuarioIcono i{
     transform: translateY(6px) scale(0.75);
+    text-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.5);
 }
 
 

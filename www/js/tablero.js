@@ -10,26 +10,40 @@ function iniciarPagina(callback) {
     if (memoria.obtener('usuarioId', true)) {
         global_usuarioActualId = parseInt(memoria.obtener('usuarioId', true));
     }
+    let llamadasAjaxRealizadas = 0;
 
-    backend.obtenerUsuarios(usuarios => {
-        global_usuarios = usuarios;
-        backend.obtenerCategorias(categorias => {
-            global_categorias = categorias;
+    function intentarPintar() {
+        llamadasAjaxRealizadas++;
+        if (llamadasAjaxRealizadas >= 2) {
             pintarTablero();
             obtenerYPintarSemana(undefined, callback);
-            setInterval(() => {
-                if (!document.hidden)
-                    obtenerYPintarSemana(global_semanaNumero);
-            }, 100);
-        });
+            setTimeout(() => {
+                setInterval(() => {
+                    if (!document.hidden)
+                        obtenerYPintarSemana(global_semanaNumero);
+                }, 250);
+            }, 2000);
+
+        }
+    }
+
+    // Llamada numero 1
+    backend.obtenerUsuarios(usuarios => {
+        global_usuarios = usuarios;
+        intentarPintar();
+    });
+    // Llamada numero 2
+    backend.obtenerCategorias(categorias => {
+        global_categorias = categorias;
+        intentarPintar();
     });
 }
 
 function obtenerYPintarSemana(semanaNumero = undefined, callback = undefined) {
-    if (global_SEMAFORO_VERDE_obtenerYPintarSemana){
+    if (global_SEMAFORO_VERDE_obtenerYPintarSemana) {
         global_SEMAFORO_VERDE_obtenerYPintarSemana = false;
         backend.obtenerSemana(semanaNumero, semana => {
-            if (semana){
+            if (semana) {
                 _pintarSemana(semana, () => {
                     if (callback)
                         callback();
@@ -159,7 +173,7 @@ function agregarSello(botonJquery) {
     let categoriaId = parseInt(celda.attr('data-categoriaid'))
     let dia = parseInt(celda.attr('data-dia'));
     backend.agregarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
-        if (ok){
+        if (ok) {
             obtenerYPintarSemana(global_semanaNumero);
         }
         $('#app').removeClass('inhabilitado');
@@ -172,7 +186,7 @@ function borrarSello(botonJquery) {
     let categoriaId = parseInt(celda.attr('data-categoriaid'))
     let dia = parseInt(celda.attr('data-dia'));
     backend.borrarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
-        if (ok){
+        if (ok) {
             obtenerYPintarSemana(global_semanaNumero);
         }
         $('#app').removeClass('inhabilitado');
@@ -204,13 +218,11 @@ function pintarTablero() {
 // Evento lanzado cuando la página ha sido totalmente cargada:
 window.addEventListener('load', function () {
     iniciarPagina(() => {
-        setTimeout(()=>{
-            $('body').fadeIn();
-        }, 500);
+        $('body').fadeIn();
     });
     // Prevenir ir hacia atrás en el navegador. En el móvil la app se cierra gracias a una función en index.js
     history.pushState(null, null, location.href);
-    window.addEventListener('popstate', function(event) {
+    window.addEventListener('popstate', function (event) {
         history.pushState(null, null, location.href);
     });
 });
