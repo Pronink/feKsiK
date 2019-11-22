@@ -4,7 +4,7 @@ let global_usuarioActualId;
 let global_semanaNumero;
 let global_semanaNumero_actual;
 let global_SEMAFORO_VERDE_obtenerYPintarSemana = true;
-let global_ultimaSemanaDatos = [];
+let global_cache_semana = [];
 
 function iniciarPagina(callback) {
     if (memoria.obtener('usuarioId', true)) {
@@ -33,7 +33,7 @@ function iniciarPagina(callback) {
         intentarPintar();
     });
     // Llamada numero 2
-    backend.obtenerCategorias(categorias => {
+    backend.tablero.obtenerCategorias(categorias => {
         global_categorias = categorias;
         intentarPintar();
     });
@@ -42,7 +42,7 @@ function iniciarPagina(callback) {
 function obtenerYPintarSemana(semanaNumero = undefined, callback = undefined) {
     if (global_SEMAFORO_VERDE_obtenerYPintarSemana) {
         global_SEMAFORO_VERDE_obtenerYPintarSemana = false;
-        backend.obtenerSemana(semanaNumero, semana => {
+        backend.tablero.obtenerSemana(semanaNumero, semana => {
             if (semana) {
                 _pintarSemana(semana, () => {
                     if (callback)
@@ -92,9 +92,9 @@ function _pintarSemana(semana, callback = undefined) {
     // Primero verifico que existan cambios entre lo que hay pintado y lo nuevo que viene en el parámetro "semana"
     // ya que el proceso de recorrer todas las celdas puede ser lento y podemos evitarlo. Cuando se cambia de
     // una semana a otra, la variable 'weekNumber' cambia y tambien entra dentro del if
-    if (JSON.stringify(semana) !== JSON.stringify(global_ultimaSemanaDatos)) {
+    if (JSON.stringify(semana) !== JSON.stringify(global_cache_semana)) {
         // Actualizo la variable global
-        global_ultimaSemanaDatos = semana;
+        global_cache_semana = semana;
         // ---------------------------------------------------------------------------
         // Pinto la barra superior:
         // global_semanaNumero solo deberá rellenarse la primera vez.
@@ -139,7 +139,7 @@ function _pintarSemana(semana, callback = undefined) {
                     if (usuariosDatos.includes(global_usuarioActualId)) // Si yo ya existo en la celdo, elimino el botón (si existe):
                         celda.find('.btnAgregarMarca').remove();
                     else if (celda.find('.btnAgregarMarca').length === 0) // Si no existo en la celda y aún no hay botón de +:
-                        celda.append('<i onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw" style="color: #efefef"></i>');
+                        celda.append('<i onclick="agregarSello($(this))" class="btnAgregarMarca fas fa-plus-circle fa-fw"></i>');
                 }
                 // Por algún motivo, a veces se duplican las entradas: // TODO Descubrir porque pasa esto. Ocurre cuando el backend se laggea y pones muchos juntos.
                 global_usuarios.forEach(usuario => {
@@ -172,7 +172,7 @@ function agregarSello(botonJquery) {
     let celda = botonJquery.parent();
     let categoriaId = parseInt(celda.attr('data-categoriaid'))
     let dia = parseInt(celda.attr('data-dia'));
-    backend.agregarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
+    backend.tablero.agregarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
         if (ok) {
             obtenerYPintarSemana(global_semanaNumero);
         }
@@ -185,7 +185,7 @@ function borrarSello(botonJquery) {
     let celda = botonJquery.parent();
     let categoriaId = parseInt(celda.attr('data-categoriaid'))
     let dia = parseInt(celda.attr('data-dia'));
-    backend.borrarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
+    backend.tablero.borrarSello(global_semanaNumero, dia, categoriaId, global_usuarioActualId, ok => {
         if (ok) {
             obtenerYPintarSemana(global_semanaNumero);
         }
@@ -194,6 +194,7 @@ function borrarSello(botonJquery) {
 }
 
 
+let tamanoBase = 14;
 function pintarTablero() {
     let html = '';
     html += '<table>';
@@ -213,6 +214,35 @@ function pintarTablero() {
     });
     html += '</table>';
     $('#app').append(html);
+    setTimeout(() => { // TODO Meter esto en otra parte y mejorar performance
+        // Inicializo la libreria de gestos
+        // pan-x pan-y permite el scroll nativo: https://hammerjs.github.io/touch-action/
+        let hammertime = new Hammer($('table').get(0), {touchAction: 'pan-x pan-y'});
+        hammertime.get('pinch').set({enable: true});
+        hammertime.on('pinch', function (ev) {
+            //console.log(ev);
+            // Utilizo una copia de tamanoBase para no alterarlo hasta terminar el zoom (evento de terminar mas abajo)
+            let tamano = Math.round(tamanoBase * ev.scale);
+            if (tamano > 20)
+                tamano = 20;
+            if (tamano < 5)
+                tamano = 5;
+            let estilos =
+                `
+                tr:first-child td, td:first-child {
+                    font-size: ${tamano}px;
+                }
+                td[data-categoriaid] i {
+                    font-size: ${tamano * 2}px;
+                }
+                `;
+            $('#zoomEstilos').html(estilos);
+        });
+        hammertime.on('pinchend', function (ev) {
+            // Obtengo el tamaño base al terminar el zoom.
+            tamanoBase = Math.round(parseInt($('tr:first-child td').css('font-size').replace('px', '')));
+        });
+    }, 200);
 }
 
 // Evento lanzado cuando la página ha sido totalmente cargada:

@@ -85,56 +85,120 @@ let backend = {
             timeout: 3000
         });
     },
-    obtenerSemana: (semanaNumero, callback) => {
-        if (semanaNumero === undefined)
-            semanaNumero = '';
-        $.ajax({
-            url: memoria.obtener('servidorIp', true) + 'week/read/' + semanaNumero,
-            success: function(datos){
-                callback(datos);
-            },
-            error: function(){
-                callback();
-            },
-            timeout: 3000
-        });
-    },
-    obtenerCategorias: (callback) => {
-        $.ajax({
-            url: memoria.obtener('servidorIp', true) + 'categories',
-            success: function(datos){
-                callback(datos)
-            },
-            error: function(){
-
-            },
-            timeout: 3000
-        });
-    },
-    agregarSello: (numeroSemana, numeroDiaDeSemana, categoriaId, usuarioId, callback) => {
-        $.ajax({
-            url: memoria.obtener('servidorIp', true) + `week/write/${numeroSemana}/${numeroDiaDeSemana}/${categoriaId}/${usuarioId}`,
-            success: function(datos){
-                callback(datos)
-            },
-            error: function(){
-                callback()
-            },
-            timeout: 3000
-        });
-    },
-    borrarSello: (numeroSemana, numeroDiaDeSemana, categoriaId, usuarioId, callback) => {
-        if (confirm('¿Seguro que quieres borrar ese registro?')) {
+    tablero: {
+        obtenerSemana: (semanaNumero, callback) => {
+            if (semanaNumero === undefined)
+                semanaNumero = '';
             $.ajax({
-                url: memoria.obtener('servidorIp', true) + `week/delete/${numeroSemana}/${numeroDiaDeSemana}/${categoriaId}/${usuarioId}`,
-                success: function(datos){
+                url: memoria.obtener('servidorIp', true) + 'week/read/' + semanaNumero,
+                success: function (datos) {
+                    callback(datos);
+                },
+                error: function () {
+                    callback();
+                },
+                timeout: 3000
+            });
+        },
+        obtenerCategorias: (callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + 'categories',
+                success: function (datos) {
                     callback(datos)
                 },
-                error: function(){
+                error: function () {
+
+                },
+                timeout: 3000
+            });
+        },
+        agregarSello: (numeroSemana, numeroDiaDeSemana, categoriaId, usuarioId, callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `week/write/${numeroSemana}/${numeroDiaDeSemana}/${categoriaId}/${usuarioId}`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
                     callback()
                 },
                 timeout: 3000
             });
+        },
+        borrarSello: (numeroSemana, numeroDiaDeSemana, categoriaId, usuarioId, callback) => {
+            if (confirm('¿Seguro que quieres borrar ese registro?')) {
+                $.ajax({
+                    url: memoria.obtener('servidorIp', true) + `week/delete/${numeroSemana}/${numeroDiaDeSemana}/${categoriaId}/${usuarioId}`,
+                    success: function (datos) {
+                        callback(datos)
+                    },
+                    error: function () {
+                        callback()
+                    },
+                    timeout: 3000
+                });
+            }
         }
+    },
+    tareas: {
+        obtenerTareas: (callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `tasks/read/`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
+                    callback()
+                },
+                timeout: 3000
+            });
+        },
+        agregarTarea: (texto, usuarioId, callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `tasks/write/${encodeURI(texto)}/${usuarioId}`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
+                    callback()
+                },
+                timeout: 3000
+            });
+        },
+        borrarTarea: (momentoCreado, callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `tasks/delete/${momentoCreado}`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
+                    callback()
+                },
+                timeout: 3000
+            });
+        },
+        agregarSello: (momentoCreado, usuarioId, callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `tasks/record/write/${momentoCreado}/${usuarioId}`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
+                    callback()
+                },
+                timeout: 3000
+            });
+        },
+        borrarSello: (momentoCreado, usuarioId, callback) => {
+            $.ajax({
+                url: memoria.obtener('servidorIp', true) + `tasks/record/delete/${momentoCreado}/${usuarioId}`,
+                success: function (datos) {
+                    callback(datos)
+                },
+                error: function () {
+                    callback()
+                },
+                timeout: 3000
+            });
+        },
     }
 };

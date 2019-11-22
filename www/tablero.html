@@ -6,6 +6,14 @@
     <link rel="stylesheet" href="lib/fontawesome/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="css/global.css">
     <link rel="stylesheet" type="text/css" href="css/tablero.css">
+    <style id="zoomEstilos">
+        tr:first-child td, td:first-child {
+            font-size: 14px;
+        }
+        td[data-categoriaid] i {
+            font-size: 28px;
+        }
+    </style>
 </head>
 <body style="display: none;">
 <div id="app">
@@ -14,6 +22,7 @@
     <!--La tabla se pega aqui-->
 </div>
 <script type="text/javascript" src="lib/jquery/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="lib/hammer/hammer.min.js"></script>
 <script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript" src="js/tablero.js"></script>
 </body>
